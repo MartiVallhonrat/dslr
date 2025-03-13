@@ -11,29 +11,6 @@ def count(column):
 
     return (count_result)
 
-
-def min(column):
-
-    for i in range(len(column)):
-
-        if (i == 0):
-            min_result = column.iloc[i]
-        else:
-            min_result = column.iloc[i] if column.iloc[i] < min_result else min_result
-    
-    return (min_result)
-
-def max(column):
-
-    for i in range(len(column)):
-
-        if (i == 0):
-            max_result = column.iloc[i]
-        else:
-            max_result = column.iloc[i] if column.iloc[i] > max_result else max_result
-    
-    return (max_result)
-
 def percentile(column, percent):
 
     column = column.sort_values()
@@ -73,11 +50,11 @@ def main(input_df):
             count(column),
             mean(column),
             std(column),
-            min(column),
+            percentile(column, 0),
             percentile(column, 25),
             percentile(column, 50),
             percentile(column, 75),
-            max(column),
+            percentile(column, 100),
         ]
     
     print(output_df)
