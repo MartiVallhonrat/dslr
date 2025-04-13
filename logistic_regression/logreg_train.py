@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import json
 
 def logistic_regression(df, algo):
     
@@ -36,11 +37,19 @@ def logistic_regression(df, algo):
             new_theta = thetas[house_name] - (alpha * derivative)
             if (np.linalg.norm(new_theta - thetas[house_name]) < epsilon):
                 break
-            else:
-                thetas[house_name] = new_theta
+            thetas[house_name] = new_theta
 
-    print(thetas)
+        thetas[house_name] = new_theta.tolist()
+
     return (thetas)
+
+def save_weights(df, thetas):
+    f = open("weights", "w")
+    f.write(json.dumps(thetas))
+    f.write('\n')
+    # save selected values
+    f.write(json.dumps({'selected': list(df.loc[:, df.columns != 'Hogwarts House'])}))
+    f.close()
 
 
 def main(df):
@@ -75,6 +84,8 @@ def main(df):
             thetas = logistic_regression(df=df, algo=program_input)
         else:
             raise Exception("Please select an available algorithm")
+
+        save_weights(df, thetas)
 
     except KeyboardInterrupt:
         return
