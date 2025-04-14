@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 
 def main(df):
 
@@ -51,6 +52,7 @@ def main(df):
     plt.tight_layout()
 
     try:
+        Path('./graphs/pair_plot').mkdir(parents=True, exist_ok=True)
         plt.savefig(f'./graphs/pair_plot/pair_plot')
     except:
         sys.stderr.write(f'Error: Unable to store pair_plot, path has to be: "./graphs/pair_plot/"\n')

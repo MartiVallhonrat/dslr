@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 
 def main(df):
 
@@ -38,6 +39,7 @@ def main(df):
             plt.legend(unique_house)
             
             try:
+                Path('./graphs/scatter_plots/').mkdir(parents=True, exist_ok=True)
                 plt.savefig(f'./graphs/scatter_plots/{column_name}_X_{subcolumn_name}')
             except:
                 sys.stderr.write(f'Error: Unable to store {column_name}_X_{subcolumn_name}, path has to be: "./graphs/scatter_plots/"\n')

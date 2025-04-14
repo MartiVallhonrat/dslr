@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 
 def main(df):
 
@@ -35,6 +36,7 @@ def main(df):
         plt.xlabel('Grades')
         plt.ylabel('Quantity of students')
         try:
+            Path('./graphs/histograms/').mkdir(parents=True, exist_ok=True)
             plt.savefig(f'./graphs/histograms/{column_name}')
         except:
             sys.stderr.write(f'Error: Unable to store {column_name}, path has to be: "./graphs/histograms/"\n')
