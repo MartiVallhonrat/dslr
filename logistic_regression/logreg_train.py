@@ -23,21 +23,56 @@ def logistic_regression(df, algo):
         # set a vector of y (1 if is the house where we are applying the one vs all)
         y = (df['Hogwarts House'] == house_name).astype(float).to_numpy()
 
-        for t in range(1000):
-            derivative = np.zeros(df.shape[1])
-            h = sigmoid(np.dot(x, thetas[house_name]))
+        if (algo == 'BGD'):
+            for epoch in range(1000):
+                derivative = np.zeros(df.shape[1])
+                h = sigmoid(np.dot(x, thetas[house_name]))
 
-            # iterate rows
-            for j in range(len(derivative)):
-                sum = 0
-                for i in range(df.shape[0]):
-                    sum += (h[i] - y[i]) * x[i][j]
-                derivative[j] = (1/df.shape[1]) * sum
+                # iterate rows
+                for j in range(len(derivative)):
+                    sum = 0
+                    for i in range(df.shape[0]):
+                        sum += (h[i] - y[i]) * x[i][j]
+                    derivative[j] = (1/df.shape[0]) * sum
 
-            new_theta = thetas[house_name] - (alpha * derivative)
-            if (np.linalg.norm(new_theta - thetas[house_name]) < epsilon):
-                break
-            thetas[house_name] = new_theta
+                new_theta = thetas[house_name] - (alpha * derivative)
+                if (np.linalg.norm(new_theta - thetas[house_name]) < epsilon):
+                    break
+                thetas[house_name] = new_theta
+        elif (algo == 'SGD'):
+            for epoch in range(1000):
+                i = np.random.randint(0, df.shape[0])
+                derivative = np.zeros(df.shape[1])
+                h = sigmoid(np.dot(x[i], thetas[house_name]))
+
+                for j in range(len(derivative)):
+                    derivative[j] = (h - y[i]) * x[i][j]
+
+                new_theta = thetas[house_name] - (alpha * derivative)
+                if (np.linalg.norm(new_theta - thetas[house_name]) < epsilon):
+                    break
+                thetas[house_name] = new_theta
+        elif (algo == 'MBGD'):
+            batch_size = 32
+            for epoch in range(1000):
+                derivative = np.zeros(df.shape[1])
+                # randomint excludes top value
+                first_row = np.random.randint(0, df.shape[0] - batch_size + 1)
+                # [] also excludes top value
+                batch_x = x[first_row:first_row + batch_size]
+                batch_y = y[first_row:first_row + batch_size]
+                h = sigmoid(np.dot(batch_x, thetas[house_name]))
+
+                # iterate rows
+                for j in range(len(derivative)):
+                    sum = 0
+                    for i in range(batch_x.shape[0]):
+                        sum += (h[i] - batch_y[i]) * batch_x[i][j]
+                    derivative[j] = (1/batch_x.shape[0]) * sum
+                new_theta = thetas[house_name] - (alpha * derivative)
+                if (np.linalg.norm(new_theta - thetas[house_name]) < epsilon):
+                    break
+                thetas[house_name] = new_theta
 
         thetas[house_name] = new_theta.tolist()
 
@@ -64,8 +99,7 @@ def main(df):
 
     try:
 
-        #program_input = input("\nWHAT DATASET DO YOU WANT TO TRAIN THE MODEL WITH?:\n\t- ALL THE DATA (ALL)\n\t- SELECTED DATA (SEL)\n\n- ")    
-        program_input = 'SEL'
+        program_input = input("\nWHAT DATASET DO YOU WANT TO TRAIN THE MODEL WITH?:\n\t- ALL THE DATA (ALL)\n\t- SELECTED DATA (SEL)\n\n- ")    
         if program_input == "ALL":
             df
         elif program_input == "SEL":
@@ -78,8 +112,7 @@ def main(df):
         #join Hogwarts Houses names
         df = pd.concat([house_df, df], axis=1)
 
-        #program_input = input("\nWHAT ALGORITHM DO YOU WANT TO USE?:\n\t- BATCH GRADIENT DESCENT (BGD)\n\t- STOCHASTIC GRADIENT DESCENT (SGD)\n\t- MINI-BATCH GRADIENT DESCENT (MBGD)\n\n- ")
-        program_input = "BGD"
+        program_input = input("\nWHAT ALGORITHM DO YOU WANT TO USE?:\n\t- BATCH GRADIENT DESCENT (BGD)\n\t- STOCHASTIC GRADIENT DESCENT (SGD)\n\t- MINI-BATCH GRADIENT DESCENT (MBGD)\n\n- ")
         if program_input == "BGD" or program_input == "SGD" or program_input == "MBGD":
             thetas = logistic_regression(df=df, algo=program_input)
         else:

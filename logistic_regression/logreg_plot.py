@@ -69,7 +69,7 @@ def main(thetas, df):
 if (__name__ == '__main__'):
     
     if (len(sys.argv) < 3):
-        sys.stderr.write('Error: Please enter the weights file and the csv in which ypu trained the model\n')
+        sys.stderr.write('Error: Please enter the weights file and the csv in which you trained the model\n')
         sys.exit(1)
 
     try:
