@@ -56,11 +56,12 @@ def logistic_regression(df, algo):
             batch_size = 32
             for epoch in range(1000):
                 derivative = np.zeros(df.shape[1])
-                # randomint excludes top value
-                first_row = np.random.randint(0, df.shape[0] - batch_size + 1)
-                # [] also excludes top value
-                batch_x = x[first_row:first_row + batch_size]
-                batch_y = y[first_row:first_row + batch_size]
+
+                # get random bath_size rows
+                batch_idxs = np.random.choice(x.shape[0], batch_size, replace=False)
+                batch_x = x[batch_idxs]
+                batch_y = y[batch_idxs]
+                
                 h = sigmoid(np.dot(batch_x, thetas[house_name]))
 
                 # iterate rows
